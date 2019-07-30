@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:11
+    volumes:
+      - /var/lib/postgresql/data
+    env_file:
+      - ./.envs/.local/.postgres
+    networks:
+      - hello
+
+  rabbitmq:
+    image: rabbitmq:3.6
+    volumes:
+      - /var/lib/rabbitmq
+    networks:
+      - hello
+
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: hello_local_django
+    volumes:
+      - ./code:/code
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "5000:5000"
+    command: /start.sh
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - hello
+
+  celeryworker:
+    <<: *django
+    image: hello_local_celeryworker
+    depends_on:
+      - rabbitmq
+      - postgres
+    ports: []
+    command: /start-celeryworker
+
+
+networks:
+  hello:
+    driver: bridge

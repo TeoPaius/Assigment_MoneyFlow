@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load staticfiles i18n %}{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE|default:"en" }}">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if title %}{{ title }} - {{ PLATFORM_NAME }}{% elif PLATFORM_NAME %}{{ PLATFORM_NAME }}{% endif %}</title>
+
+    {% block page_css %}{% endblock %}
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+     <link rel="icon" type="image/png" href="{% static 'images/favicon/favicon-196x196.png' %}" sizes="196x196" />
+     <link rel="icon" type="image/png" href="{% static 'images/favicon/favicon-32x32.png' %}" sizes="32x32" />
+     <link rel="icon" type="image/png" href="{% static 'images/favicon/favicon-16x16.png' %}" sizes="16x16" />
+  </head>
+
+  <body>
+    {% block body %}
+      {% if user.is_authenticated %}
+      {% endif %}
+
+      {% if messages %}
+        {% for message in messages %}
+              {{ message }}
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}
+      {% endblock content %}
+
+    {% endblock body %}
+
+    {% block pre_js %}
+    {% endblock pre_js %}
+
+    <script type="text/javascript" src="{% static 'js/material.min.js' %}"></script>
+
+    {% block post_js %}
+    {% endblock post_js %}
+  </body>
+</html>
